@@ -10,6 +10,7 @@
     "@types/node": "^16.18.114",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
+    "qs": "^6.13.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
@@ -21,7 +22,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commitlint": "commitlint --edit",
+    "json-server": "json-server __json_server_mock__/db.json --watch --port 3001"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +50,7 @@
     "@commitlint/config-conventional": "^19.5.0",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.1.6",
+    "json-server": "^1.0.0-beta.3",
     "prettier": "3.3.3"
   },
   "lint-staged": {
