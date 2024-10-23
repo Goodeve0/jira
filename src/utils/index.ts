@@ -20,9 +20,7 @@ export const useMount = (callback: () => void) => {
   }, []);
 };
 
-//后面用泛型
-
-export const useDebounce = (val: unknown, delay?: number): any => {
+export const useDebounce = <V>(val: V, delay?: number) => {
   const [debouncedVal, setDebounceVal] = useState(val);
 
   useEffect(() => {
