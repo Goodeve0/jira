@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { add } from "lodash";
+import { useEffect, useRef, useState } from "react";
 export const isFalsy = (val: unknown) => (val === 0 ? false : !val);
 
 export const cleanObject = (obj: object) => {
@@ -29,4 +30,16 @@ export const useDebounce = <V>(val: V, delay?: number) => {
   }, [val, delay]);
 
   return debouncedVal;
+};
+export const useMountedRef = () => {
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  });
+
+  return mountedRef;
 };

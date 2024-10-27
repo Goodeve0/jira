@@ -1,10 +1,5 @@
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  title: string;
-  organization: string;
-}
+import React from "react";
+import { User } from "types/user";
 interface SearchPanelProps {
   users: User[];
   param: {

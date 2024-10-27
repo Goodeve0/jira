@@ -1,13 +1,16 @@
 import React from "react";
 import "./App.css";
-import { ProjectListScreen } from "screens/project-list";
-import { LoginScreen } from "screens/login";
-
+// import { AuthenticatedApp } from "authenticated-app";
+import { UnauthenticatedApp } from "unauthenticated-app";
+// import { useAuth } from "context/auth-context";
+import ErrorBoundary from "antd/lib/alert/ErrorBoundary";
 function App() {
+  // const { user } = useAuth();
   return (
     <div className="App">
-      {/* <ProjectListScreen /> */}
-      <LoginScreen />
+      <ErrorBoundary>
+        <UnauthenticatedApp />
+      </ErrorBoundary>
     </div>
   );
 }
