@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import { cleanObject, useMount, useDebounce } from "utils";
 import React from "react";
 import * as qs from "qs";
+import { ScreenContainer } from "components/lib";
+import { Row } from "antd";
+import { useHttp } from "utils/http";
+
 const apiUrl = process.env.REACT_APP_API_URL;
 export const ProjectListScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,32 +17,27 @@ export const ProjectListScreen = () => {
     name: "",
     personId: "",
   });
-  const debounceParam = useDebounce(param, 200);
+  const debounceParam = useDebounce(param, 2000);
   const [list, setList] = useState([]);
   const [users, setUsers] = useState([]);
+  const client = useHttp();
   useEffect(() => {
-    setIsLoading(true);
-    fetch(
-      `${apiUrl}/projects?${qs.stringify(cleanObject(debounceParam))}`
-    ).then(async (res) => {
-      if (res.ok) {
-        setList(await res.json());
-        setIsLoading(false);
-      }
-    });
+    client("projects", { data: cleanObject(debounceParam) }).then(setList);
   }, [debounceParam]);
 
   useMount(() => {
-    fetch(`${apiUrl}/users`).then(async (res) => {
-      if (res.ok) {
-        setUsers(await res.json());
-      }
-    });
+    client("users").then(setUsers);
   });
   return (
     <div>
-      <SearchPanel users={users} param={param} setParam={setParam} />
-      <List users={users} list={list} />
+      <ScreenContainer>
+        <Row>
+          <h1>项目列表</h1>
+        </Row>
+
+        <SearchPanel users={users || []} param={param} setParam={setParam} />
+        <List users={users || []} dataSource={list || []} />
+      </ScreenContainer>
     </div>
   );
 };

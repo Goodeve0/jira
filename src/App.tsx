@@ -1,15 +1,15 @@
 import React from "react";
 import "./App.css";
-// import { AuthenticatedApp } from "authenticated-app";
 import { UnauthenticatedApp } from "unauthenticated-app";
-// import { useAuth } from "context/auth-context";
 import ErrorBoundary from "antd/lib/alert/ErrorBoundary";
+import { AuthenticatedApp } from "authenticated-app";
+import { useAuth } from "context/auth-context";
 function App() {
-  // const { user } = useAuth();
+  const { user } = useAuth();
   return (
     <div className="App">
       <ErrorBoundary>
-        <UnauthenticatedApp />
+        {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
       </ErrorBoundary>
     </div>
   );
