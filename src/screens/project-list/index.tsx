@@ -4,39 +4,38 @@ import { useState, useEffect } from "react";
 import { cleanObject, useMount, useDebounce } from "utils";
 import React from "react";
 import * as qs from "qs";
-import { ScreenContainer } from "components/lib";
-import { Row } from "antd";
+import { ButtonNoPadding, ScreenContainer } from "components/lib";
+import { Row } from "components/lib";
 import { useHttp } from "utils/http";
+import { Typography } from "antd";
+import { useAsync } from "utils/use-async";
+import Project from "types/project";
+import { useProjects } from "utils/project";
+import { useUsers } from "utils/user";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 export const ProjectListScreen = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<null | Error>(null);
-
   const [param, setParam] = useState({
     name: "",
     personId: "",
   });
-  const debounceParam = useDebounce(param, 2000);
-  const [list, setList] = useState([]);
-  const [users, setUsers] = useState([]);
-  const client = useHttp();
-  useEffect(() => {
-    client("projects", { data: cleanObject(debounceParam) }).then(setList);
-  }, [debounceParam]);
+  const debounceParam = useDebounce(param, 200);
+  const { isLoading, error, data: list } = useProjects();
+  const { data: users } = useUsers();
 
-  useMount(() => {
-    client("users").then(setUsers);
-  });
   return (
     <div>
       <ScreenContainer>
-        <Row>
+        <Row marginBottom={2} between={true}>
           <h1>项目列表</h1>
         </Row>
+        <ButtonNoPadding type="link">创建项目</ButtonNoPadding>
 
         <SearchPanel users={users || []} param={param} setParam={setParam} />
-        <List users={users || []} dataSource={list || []} />
+        {error ? (
+          <Typography.Text type={"danger"}>{error.message}</Typography.Text>
+        ) : null}
+        <List loading={isLoading} users={users || []} dataSource={list || []} />
       </ScreenContainer>
     </div>
   );

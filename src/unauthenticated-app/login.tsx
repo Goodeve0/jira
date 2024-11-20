@@ -3,6 +3,7 @@ import React from "react";
 import { Form, Input, Button } from "antd";
 import { useAsync } from "utils/use-async";
 import { useAuth } from "context/auth-context";
+import { LongButton } from "unauthenticated-app";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -40,9 +41,11 @@ export const LoginScreen = ({
       >
         <Input placeholder={"密码"} type="text" id={"password"} />
       </Form.Item>
-      <Button htmlType={"submit"} type={"primary"}>
-        登录
-      </Button>
+      <Form.Item>
+        <LongButton htmlType={"submit"} type={"primary"}>
+          登录
+        </LongButton>
+      </Form.Item>
     </Form>
   );
 };

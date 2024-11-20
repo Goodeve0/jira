@@ -4,11 +4,11 @@ import { useMountedRef } from "utils";
 interface State<D> {
   error: Error | null;
   data: D | null;
-  stat: "ready" | "loading" | "error" | "success";
+  stat: "idle" | "loading" | "error" | "success";
 }
 
 const defaultInitialState: State<null> = {
-  stat: "ready",
+  stat: "idle",
   data: null,
   error: null,
 };
@@ -64,39 +64,37 @@ export const useAsync = <D>(
   );
 
   // run 来触发异步请求
-  const run = useCallback(
-    (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
-      if (!promise || !promise.then) {
-        throw new Error("请传入 Promise 类型数据");
+  const run = (
+    promise: Promise<D>,
+    runConfig?: { retry: () => Promise<D> }
+  ) => {
+    if (!promise || !promise.then) {
+      throw new Error("请传入 Promise 类型数据");
+    }
+    setRetry(() => () => {
+      if (runConfig?.retry) {
+        run(runConfig?.retry(), runConfig);
       }
-      setRetry(() => () => {
-        if (runConfig?.retry) {
-          run(runConfig?.retry(), runConfig);
-        }
+    });
+    safeDispatch({ stat: "loading" });
+    return promise
+      .then((data) => {
+        setData(data);
+        return data;
+      })
+      .catch((error) => {
+        setError(error);
+        return error;
       });
-      safeDispatch({ stat: "loading" });
-      return promise
-        .then((data) => {
-          setData(data);
-          return data;
-        })
-        .catch((error) => {
-          setError(error);
-          return error;
-        });
-    },
-    [config.throwOnError, setData, setData, safeDispatch]
-  );
-
+  };
   return {
-    isReady: state.stat === "ready",
+    isIdle: state.stat === "idle",
     isLoading: state.stat === "loading",
     isError: state.stat === "error",
     isSuccess: state.stat === "success",
     run,
     setData,
     setError,
-    // retry 被调用时重新跑一遍run，让state刷新一遍
     retry,
     ...state,
   };
